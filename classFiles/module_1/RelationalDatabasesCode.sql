@@ -22,7 +22,7 @@ CREATE TABLE course(cno text NOT NULL,
 CREATE TABLE enroll(sid text,
                     cno text,
                     grade varchar(2),
-                    primary key(sid,cno));
+                    primary key(sid,cno),
                     foreign key(sid) references student(sid),
                     foreign key(cno) references course(cno));
 
