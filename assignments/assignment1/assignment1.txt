@@ -1,0 +1,42 @@
+Query 1:
+9001,Jean,Adobe,60000
+9002,Vidya,Adobe,45000
+9003,Anna,Facebook,55000
+9004,Qin,Facebook,55000
+9005,Aya,SAP,60000
+9006,Ryan,Facebook,55000
+9007,Danielle,HBO,50000
+9008,Emma,Facebook,50000
+9009,Hasan,Adobe,60000
+9010,Linda,Facebook,55000
+9011,Nick,SAP,55000
+9012,Eric,Adobe,50000
+9013,Lisa,HBO,55000
+9014,Deepa,Adobe,50000
+9015,Chris,Facebook,60000
+9016,YinYue,Facebook,55000
+9017,Latha,HBO,60000
+9018,Arif,Adobe,50000
+
+Query 2:
+9007,Danielle
+9012,Eric
+9013,Lisa
+
+Query 3:
+9006,Ryan
+9007,Danielle
+9009,Hasan
+9010,Linda
+9014,Deepa
+9016,YinYue
+9017,Latha
+9018,Arif
+
+Query 4:
+Eric
+Aya
+Vidya
+Emma
+
+Query 5:
