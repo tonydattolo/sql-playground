@@ -162,8 +162,7 @@ FROM
 WHERE
     managers.employee_id = m.manager_id
     AND employees.employee_id = m.employee_id
-    AND employees.employee_city = managers.employee_city
-ORDER BY 1 ASC;
+    AND employees.employee_city = managers.employee_city;
 
 
 -- 4. Find the names of Employees who doesn’t stay in the same city as that of
@@ -179,16 +178,65 @@ WHERE
 -- who manages at least one other employee whose job domain is
 -- OperatingSystems.
 
+SELECT DISTINCT e.employee_id, e.employee_name, e.employee_salary
+FROM employeeDetails e, manages m
+WHERE
+    e.employee_id = m.manager_id
+    AND m.employee_id IN (SELECT e.employee_id
+                            FROM employeeDetails e, manages m
+                            WHERE
+                                e.employee_id = m.manager_id
+                                AND m.employee_id IN (SELECT e.employee_id
+                                                        FROM employeeDetails e, jobskill j
+                                                        WHERE
+                                                            e.employee_id = j.employee_id
+                                                            AND j.domain = 'OperatingSystems'));
+
+
+
 -- 6. Find the common manager for the pairs (id1, id2) of different employees.
+SELECT DISTINCT  m1.manager_id
+FROM
+    manages m1,
+    manages m2
+WHERE
+    m1.manager_id = m2.manager_id
+    AND m1.employee_id <> m2.employee_id;
 
 -- 7. Find the name, location of each company that does not have employees
 -- who live in Chicago or Bloomington.
+(SELECT DISTINCT
+    c.company_name,
+    c.company_location
+FROM
+    company c, employeeDetails e
+WHERE
+    e.employee_city <> 'Chicago'
+    AND e.employee_city <> 'Bloomington')
+INTERSECTION
+(SELECT c.company_name,c.company_location
+FROM company c, employeeDetails e
+WHERE
+    c.company_name <> e.company_name);
+
+SELECT DISTINCT c.company_name,c.company_location
+FROM company c, employeeDetails e
+WHERE
+    c.company_name <> e.company_name;
 
 -- 8. For each company, list its name, location along with the ids of its
 -- employees who have the lowest salary.
+SELECT
+FROM
+    company c,
+    employeeDetails e1,
+    employeedetails e2
+WHERE
+
 
 -- 9. Find id and name of each employee who does not have a manager with a
 -- salary higher than that of the employee.
+
 
 -- 10. Find the id and name of employee who works for company Facebook
 -- whose job domain is Programming and whose manager works at a different
