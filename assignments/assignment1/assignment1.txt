@@ -51,5 +51,33 @@ Query 6:
 9013
 
 Query 7:
+Facebook,Denver
+SAP,NewYork
+HBO,Indianapolis
+eBay,Bloomington
+
+
+Query 8:
+
+
+Query 9:
+9014,Deepa
+9004,Qin
+9010,Linda
+9017,Latha
+9016,YinYue
+9015,Chris
+9006,Ryan
+9009,Hasan
+
+Query 10:
+9002,Vidya
+9004,Qin
+9008,Emma
+9011,Nick
+9012,Eric
+9014,Deepa
+9015,Chris
+9016,YinYue
 
 

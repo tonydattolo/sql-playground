@@ -123,17 +123,6 @@ INSERT INTO manages VALUES
 (9013, 9007),
 (9013, 9017);
 
-SELECT *
-FROM company;
-
-SELECT *
-FROM employeeDetails;
-
-SELECT *
-FROM  jobskill;
-
-SELECT *
-FROM manages;
 
 -- 1. Find the id, name, company name and salary of each employee who lives
 -- in Indianapolis and whose salary is in the range [45000; 60000].
@@ -141,9 +130,12 @@ SELECT DISTINCT e.employee_id, e.employee_name, e.company_name, e.employee_salar
 FROM employeeDetails e
 WHERE e.employee_salary
     BETWEEN 45000 AND 60000;
+
 -- 2. Find the id and name of each employee who works in a city located in
 -- Indianapolis, whose job domain is OperatingSystems and a salary greater
 -- than 40000.
+-- new 2. Find the id and name of each employee whose employee city is Indianapolis
+-- and whose job domain is OperatingSystems and a salary greater than 40000.
 SELECT DISTINCT e.employee_id, e.employee_name
 FROM employeeDetails e, jobskill j
 WHERE
@@ -205,39 +197,57 @@ WHERE
 
 -- 7. Find the name, location of each company that does not have employees
 -- who live in Chicago or Bloomington.
-(SELECT DISTINCT
-    c.company_name,
-    c.company_location
-FROM
-    company c, employeeDetails e
-WHERE
-    e.employee_city <> 'Chicago'
-    AND e.employee_city <> 'Bloomington')
-INTERSECTION
-(SELECT c.company_name,c.company_location
+(SELECT DISTINCT c.company_name, c.company_location
 FROM company c, employeeDetails e
 WHERE
-    c.company_name <> e.company_name);
-
-SELECT DISTINCT c.company_name,c.company_location
+    c.company_name NOT IN (SELECT e2.company_name
+                            FROM employeeDetails e2))
+UNION
+(SELECT DISTINCT c.company_name, c.company_location
 FROM company c, employeeDetails e
 WHERE
-    c.company_name <> e.company_name;
+    c.company_name = e.company_name
+    AND c.company_location = e.employee_city
+    AND e.employee_city <> 'Chicago'
+    AND e.employee_city <> 'Bloomington');
 
--- 8. For each company, list its name, location along with the ids of its
--- employees who have the lowest salary.
-SELECT
-FROM
-    company c,
-    employeeDetails e1,
-    employeedetails e2
+-- 8. For each company, list the company name, the ids of its employees along
+-- with the employee city who have the lowest salary.
+SELECT c.company_name, e.employee_id, e.employee_city
+FROM company c, employeeDetails e
 WHERE
-
 
 -- 9. Find id and name of each employee who does not have a manager with a
 -- salary higher than that of the employee.
+SELECT DISTINCT employee.employee_id, employee.employee_name
+FROM
+    employeeDetails employee,
+    employeeDetails manager,
+    manages m
+WHERE
+    m.manager_id = manager.employee_id
+    AND m.employee_id = employee.employee_id
+    AND employee.employee_salary >= manager.employee_salary;
 
 
 -- 10. Find the id and name of employee who works for company Facebook
 -- whose job domain is Programming and whose manager works at a different
 -- location.
+-- 10. Find  the  id  and  name  of  employee  who  works  for Facebook
+-- whose  job domain   is   Programming   and   whose   manager   stays
+-- at a different city.
+
+SELECT e.employee_id, e.employee_name
+FROM employeeDetails e, jobskill j
+WHERE
+    e.employee_id = j.employee_id
+    AND j.domain = 'Programming'
+    AND e.employee_id IN (SELECT employee.employee_id
+                            FROM
+                                employeeDetails employee,
+                                employeedetails manager,
+                                manages m
+                            WHERE
+                                m.manager_id = manager.employee_id
+                                AND employee.employee_id = m.employee_id
+                                AND employee.employee_city <> manager.employee_city);
