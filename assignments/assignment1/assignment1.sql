@@ -134,7 +134,7 @@ WHERE e.employee_salary
 -- 2. Find the id and name of each employee who works in a city located in
 -- Indianapolis, whose job domain is OperatingSystems and a salary greater
 -- than 40000.
--- new 2. Find the id and name of each employee whose employee city is Indianapolis
+-- 2(NEW). Find the id and name of each employee whose employee city is Indianapolis
 -- and whose job domain is OperatingSystems and a salary greater than 40000.
 SELECT DISTINCT e.employee_id, e.employee_name
 FROM employeeDetails e, jobskill j
@@ -213,9 +213,13 @@ WHERE
 
 -- 8. For each company, list the company name, the ids of its employees along
 -- with the employee city who have the lowest salary.
-SELECT c.company_name, e.employee_id, e.employee_city
+SELECT DISTINCT e.employee_id, e.employee_name, e.employee_city
 FROM company c, employeeDetails e
 WHERE
+    c.company_name = e.company_name
+    AND e.employee_salary <= ALL (SELECT e1.employee_salary
+                                  FROM employeeDetails e1
+                                  WHERE e.company_name = e1.company_name);
 
 -- 9. Find id and name of each employee who does not have a manager with a
 -- salary higher than that of the employee.
@@ -233,7 +237,7 @@ WHERE
 -- 10. Find the id and name of employee who works for company Facebook
 -- whose job domain is Programming and whose manager works at a different
 -- location.
--- 10. Find  the  id  and  name  of  employee  who  works  for Facebook
+-- 10(NEW). Find  the  id  and  name  of  employee  who  works  for Facebook
 -- whose  job domain   is   Programming   and   whose   manager   stays
 -- at a different city.
 

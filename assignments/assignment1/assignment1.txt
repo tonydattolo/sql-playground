@@ -58,7 +58,10 @@ eBay,Bloomington
 
 
 Query 8:
-
+9002,Vidya,Indianapolis
+9007,Danielle,Indianapolis
+9011,Nick,NewYork
+9008,Emma,Bloomington
 
 Query 9:
 9014,Deepa
