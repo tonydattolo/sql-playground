@@ -492,15 +492,32 @@ WHERE
     AND p2.person_id = k.person_id2
     AND p2.person_id = w.person_id
     AND w.employee_company = 'Hulu'
-    AND NOT EXISTS (SELECT DISTINCT p.person_id
-                    FROM person p, person p2, knows k, worksfor w, personskill s
+    AND EXISTS (SELECT DISTINCT p1.person_id, p1.person_name
+                    FROM person p1, person p2, knows k, worksfor w, personskill s
                     WHERE
-                        p.person_id = k.person_id1
+                        p1.person_id = k.person_id1
                         AND p2.person_id = k.person_id2
                         AND p2.person_id = w.person_id
                         AND w.employee_company = 'Intel'
                         AND p2.person_id = s.person_id
                         AND s.skill = 'Networks');
+
+SELECT DISTINCT p.person_id, p.person_name
+FROM person p, person p2, knows k, worksfor w, personskill s
+WHERE
+    p.person_id = k.person_id1
+    AND p2.person_id <> k.person_id2
+    AND p2.person_id = w.person_id
+    AND w.employee_company = 'Intel'
+    AND p2.person_id = s.person_id
+    AND s.skill = 'Networks'
+    AND EXISTS (SELECT DISTINCT p.person_id, p.person_name
+                FROM person p, knows k, person p2, worksfor w
+                WHERE
+                    p.person_id = k.person_id1
+                    AND p2.person_id = k.person_id2
+                    AND p2.person_id = w.person_id
+                    AND w.employee_company = 'Hulu');
 
 -- 3. Find the name of each company located in Bloomington, but not in Indianapolis, along
 -- with the ID, name, and salary of each person who works for that company and who has
@@ -508,6 +525,33 @@ WHERE
 
 -- (a) Formulate this query in SQL without using subqueries and set predicates. You are
 -- allowed to use the SQL operators INTERSECT, UNION, and EXCEPT.
+((SELECT DISTINCT c.company_name, p.person_id, p.person_name, w.employee_salary
+ FROM
+     company c, person p, worksfor w
+ WHERE
+    c.company_city = 'Bloomington'
+    AND p.person_id = w.person_id
+    AND w.employee_company = c.company_name
+ ORDER BY c.company_name DESC)
+EXCEPT
+(SELECT DISTINCT c.company_name, p.person_id, p.person_name, w.employee_salary
+ FROM company c, person p, worksfor w
+ WHERE
+    c.company_city = 'Indianapolis'
+    AND p.person_id = w.person_id
+    AND w.employee_company = c.company_name
+ ORDER BY c.company_name DESC));
+
+
+-- SELECT DISTINCT c.company_name, p.person_id, p.person_name, w.employee_salary
+-- FROM company c, person p, worksfor w
+-- WHERE w.employee_salary >= (SELECT MAX(employee_salary), employee_company
+--                             FROM worksfor
+--                             GROUP BY employee_company);
+--
+-- SELECT MAX(employee_salary), employee_company
+-- FROM worksfor
+-- GROUP BY employee_company;
 
 -- (b) Formulate this query in SQL by only using the IN or NOT IN set predicates.
 
@@ -524,14 +568,49 @@ WHERE
 -- (a) Define a view SalaryAbove50000 that defines the sub relation of Person consisting of the
 -- employees whose salary is strictly above 50000.
 -- Test your view
+CREATE VIEW SalaryAbove50000 AS
+    SELECT p.person_id, p.person_name, p.person_city, p.birth_year
+    FROM person p, worksfor w
+    WHERE
+        p.person_id = w.person_id
+        AND w.employee_salary > 50000;
+
+SELECT p.person_id, p.person_name, p.person_city, p.birth_year
+FROM person p, worksfor w
+WHERE
+    p.person_id = w.person_id
+    AND w.employee_salary > 50000;
 
 -- (b) Define a view Programmer that returns the set of IDs of persons whose job skill is
 -- Programming. Test your view.
+CREATE VIEW Programmer AS
+    SELECT p.person_id
+    FROM person p, personskill s
+    WHERE
+        p.person_id = s.person_id
+        AND s.skill = 'Programming';
+
+SELECT DISTINCT p.person_id
+FROM person p, personskill s
+WHERE
+    p.person_id = s.person_id
+    AND s.skill = 'Programming';
 
 -- (c) Using the views SalaryAbove50000 and Programmer, write the following query in SQL:
 -- ‘Find the ID and name of each person who (a) works for ‘Netflix’, (b) has a salary which is
 -- strictly above 50000, and (c) who does not know any person whose job skill is Programming
 -- with a salary strictly above 50000.’
+
+SELECT DISTINCT sal50.person_id, sal50.person_name
+FROM SalaryAbove50000 sal50, Programmer pro, worksfor w
+WHERE
+    sal50.person_id = w.person_id
+    AND w.employee_company = 'Netflix'
+    AND EXISTS (SELECT DISTINCT sal50.person_id, sal50.person_name
+                FROM SalaryAbove50000 sal50, Programmer pro, knows k
+                WHERE
+                    sal50.person_id = k.person_id1
+                    AND pro.person_id = k.person_id2);
 
 -- 2.
 -- (a) Define a parameterized view SalaryAbove(amount integer) that returns, for a given value
@@ -539,13 +618,73 @@ WHERE
 -- is strictly above that of this value. Test your view for the parameter values 30000, 50000, and
 -- 55000.
 
+CREATE FUNCTION SalaryAbove(amount INTEGER)
+    RETURNS TABLE(id INTEGER, name TEXT, city TEXT, birthyear INTEGER) AS
+    $$
+        SELECT p.person_id, p.person_name, p.person_city, p.birth_year
+        FROM person p, worksfor w
+        WHERE
+            p.person_id = w.person_id
+            AND w.employee_salary > amount;
+    $$ LANGUAGE SQL;
+
+SELECT *
+FROM SalaryAbove(30000) s;
+
+SELECT *
+FROM SalaryAbove(50000) s;
+
+SELECT *
+FROM SalaryAbove(55000) s;
+
 -- (b) Define a view KnowsEmployeeAtCompany(cname text) that returns the set of pids of
 -- persons who know a person who works at the company given by the value of the parameter
 -- cname. Test you view for the parameters ‘Yahoo’, ‘Google’, and ‘Amazon’.
 
+CREATE FUNCTION KnowsEmployeeAtCompany(cname TEXT)
+    RETURNS TABLE(id INTEGER) AS
+    $$
+        SELECT p.person_id
+        FROM person p, person p2, knows k, worksfor w
+        WHERE
+            p.person_id = k.person_id1
+            AND p2.person_id = k.person_id2
+            AND p2.person_id = w.person_id
+            AND w.employee_company = cname;
+    $$ LANGUAGE SQL;
+
+SELECT *
+FROM KnowsEmployeeAtCompany('Yahoo') k
+ORDER BY k;
+
+SELECT DISTINCT *
+FROM KnowsEmployeeAtCompany('Google') k
+ORDER BY k;
+
+SELECT DISTINCT *
+FROM KnowsEmployeeAtCompany('Amazon') k
+ORDER BY k;
 -- queries with expressions and functions; boolean queries
 -- 1. Let A(x) be the relation schema for a set of positive integers. (The domain of x is
 -- INTEGER.) Write a SQL statement that produces a table which, for each x ∈ A,
 -- lists the tuple (x, x 1/3 , x x , 10 x , x! , log 2 x).
 -- Ex: A = {4, 8, 12, 16, 20}
 -- Reference Table will be given in expected output.
+
+CREATE TABLE formath(number integer);
+insert into formath values(4);
+insert into formath values(8);
+insert into formath values(12);
+insert into formath values(16);
+insert into formath values(20);
+
+-- select * from formath;
+
+SELECT
+    f.number as x,
+    cbrt(f.number) as cube_root_x,
+    power(f.number, f.number) as x_to_the_power_x,
+    power(10, f.number) as ten_to_the_power_x,
+    factorial(f.number) as x_factorial,
+    log(2, f.number) as logarithm_x_base_2
+FROM formath f;
