@@ -478,7 +478,7 @@ create function evenNoOfEmployees(cname text)
         having count(w.person_id) % 2 = 0;
     $$ language sql;
 
-create view salaryMost60000 as
+create view salaryMore60000 as
     SELECT w.company_name
     FROM worksfor w
     WHERE w.employee_salary <= 60000;

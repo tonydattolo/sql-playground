@@ -4,7 +4,7 @@ SELECT DISTINCT w1.cname
 FROM works w1, works w2
 WHERE w1.cname = w2.cname AND w1.pid <> w2.pid
 
-Formulate an equivalent query in Pure SQL that does not use the DISTINCT clause.
+-- Formulate an equivalent query in Pure SQL that does not use the DISTINCT clause.
 
 select c.cname
 from company c
@@ -16,7 +16,7 @@ where exists (select 1
               where w1.cname = w2.cname
               and w1.pid <> w2.pid)
 
-2.	Let R(A) and S(A,B) be two relations. Consider the following query
+-- 2.	Let R(A) and S(A,B) be two relations. Consider the following query
 
 SELECT r.A
 FROM R r
@@ -26,7 +26,7 @@ WHERE r.A NOT IN (SELECT s1.A
                                                       FROM S s
                                                       WHERE s.B <> s2.B))
 
-Formulate this query in Pure SQL without using any of the set predicates (NOT) EXISTS, (NOT) IN, θ ALL, and θ SOME predicates. You can use the set operations UNION, INTERSECT, and EXCEPT
+-- Formulate this query in Pure SQL without using any of the set predicates (NOT) EXISTS, (NOT) IN, θ ALL, and θ SOME predicates. You can use the set operations UNION, INTERSECT, and EXCEPT
 
 SELECT r.A
 FROM R r
@@ -38,7 +38,7 @@ WHERE EXISTS (SELECT s1.A
                                FROM S s
                                WHERE s.A = r.A))
 
-3. Let R(A) and S(A,B) be two relations. Consider the following query:
+-- 3. Let R(A) and S(A,B) be two relations. Consider the following query:
 
 SELECT r.A
 FROM R r
@@ -50,7 +50,7 @@ WHERE EXISTS (SELECT s1.A
                                 FROM S s
                                 WHERE s.A = r.A))
 
-Translate this query into an equivalent SQL query wherein the set predicates are simulated with the SQL COUNT aggregate function.
+-- Translate this query into an equivalent SQL query wherein the set predicates are simulated with the SQL COUNT aggregate function.
 
 SELECT r.A
 FROM R r
@@ -63,7 +63,7 @@ WHERE (SELECT COUNT(1)
             WHERE s.A = r.A
             AND NOT(s1.B <> s.B)) = 0) >= 1
 
-4. Consider the following constraint: Each manager must have all the skills of each of the employees that he or she manages. Write a Pure SQL boolean query that returns true if this constraint is satisfied in the database, and returns false if this is not the case.
+-- 4. Consider the following constraint: Each manager must have all the skills of each of the employees that he or she manages. Write a Pure SQL boolean query that returns true if this constraint is satisfied in the database, and returns false if this is not the case.
 
 select not exists (select m.mid
                    from manages m, job_skill je
@@ -72,9 +72,9 @@ select not exists (select m.mid
                                        from job_skill jm
                                        where jm.pid = m.mid))
 
-5. Formulate the following queries in Pure SQL (in particular, you cannot use SQL aggregate functions in your solution):
+-- 5. Formulate the following queries in Pure SQL (in particular, you cannot use SQL aggregate functions in your solution):
 
-(a)Find the pid and name of each person who lives in the same city as one or more of his or her managers.
+-- (a)Find the pid and name of each person who lives in the same city as one or more of his or her managers.
 
 select p.pid, p.name
 from person p
@@ -84,7 +84,7 @@ where p.city in (select pm.city
                   and m.mid = pm.pid)
 
 
-(b) Find the mid of each manager who has a higher salary than at least two employees he or she manages.
+-- (b) Find the mid of each manager who has a higher salary than at least two employees he or she manages.
 
 select distinct m.mid
 from manages m, works w
@@ -99,8 +99,8 @@ and exists(select 1
            and w.salary > w1.salary
            and w.salary > w2.salary)
 
-(c) Find the pairs (c,e) where c is the name of a company and e is the pid of a person who works at the company and who has the highest
-salary of all the employees working for that company.
+-- (c) Find the pairs (c,e) where c is the name of a company and e is the pid of a person who works at the company and who has the highest
+-- salary of all the employees working for that company.
 
 select c.name, w.pid
 from works w
@@ -108,7 +108,7 @@ where w.salary >= ALL (select w1.salary
                         from works w1 where
                         w1.cname = c.cname)
 
-(d) Find each pairs (c,e) where c is the name of a company and e is the pid of an employee who works for that company and who has at least one manager who lacks at least one of that employee’s job skills.
+-- (d) Find each pairs (c,e) where c is the name of a company and e is the pid of an employee who works for that company and who has at least one manager who lacks at least one of that employee’s job skills.
 
 select w.cname, w.pid
 from works w
@@ -122,11 +122,11 @@ where exists (select m.mid
                                                from Person_Skill jm
                                                where jm.pid = m.mid)))
 
-7. Formulate the following queries in general SQL. So now you can use the aggregate functions COUNT, SUM, MIN, MAX, and AVERAGE, and the operations GROUP BY and HAVING. (Again however, you can not use SQL’s JOIN operations.) You should also consider creating and using
-user-defined functions.
+-- 7. Formulate the following queries in general SQL. So now you can use the aggregate functions COUNT, SUM, MIN, MAX, and AVERAGE, and the operations GROUP BY and HAVING. (Again however, you can not use SQL’s JOIN operations.) You should also consider creating and using
+-- user-defined functions.
 
-(a) Find, for each person, that person’s pid and name along with the number of persons he or she manages. (Make sure that your
-solution works also if a person is not a manager.)
+-- (a) Find, for each person, that person’s pid and name along with the number of persons he or she manages. (Make sure that your
+-- solution works also if a person is not a manager.)
 
 create function numberOfEmployeesManagedBy(person int)
 returns int as
@@ -148,14 +148,14 @@ $$
   and c.city = city;
 $$
 
-(b) Find the name of each city that has the highest number of employed persons.
+-- (b) Find the name of each city that has the highest number of employed persons.
 
 select c.city
 from company c
 where numberOfEmployedPeople(c.city) >= all (select numberOfEmployedPeople(c2.city)
                                             from company c2)
 
-(c) Find the name of each company that employees more managers than non-managers.
+-- (c) Find the name of each company that employees more managers than non-managers.
 
 create function NumberOfManagersAtCompany(company text)
 returns int as
@@ -184,11 +184,11 @@ from
 company c
 where NumberofOfManagersAtCompany(c.cname) > NumberofNonManagersAtCompany(c.cname);
 
-8. In the following queries with quantifiers you have to use the method of Venn diagrams with (non-counting) conditions. In particular, you need to use views and parameterized views to specify the relevant sets that are involved in this queries.
-
-Using this method, formulate the following queries in Pure SQL.
-
-(a) Find the pid of each employee who has all the job skills of at least one of his or her managers.
+-- 8. In the following queries with quantifiers you have to use the method of Venn diagrams with (non-counting) conditions.
+-- In particular, you need to use views and parameterized views to specify the relevant sets that are involved in this queries.
+-- Using this method, formulate the following queries in Pure SQL.
+--
+-- (a) Find the pid of each employee who has all the job skills of at least one of his or her managers.
 
 create function job_skillsOfPerson(person int)
 returns table (skill text) as
@@ -209,7 +209,7 @@ where exists (select 1
               select skill
               from job_skillsOfPerson(w.pid)));
 
-(b) Find each pairs (c,m) where c is the name of a company that is located in Bloomington and m is the mid a manager who works for that company and who manages at least two employees who make more than $50,000.
+-- (b) Find each pairs (c,m) where c is the name of a company that is located in Bloomington and m is the mid a manager who works for that company and who manages at least two employees who make more than $50,000.
 
 create function employeesManagedByManager(manager int)
 returns table (pid int) as
@@ -247,12 +247,12 @@ and exists (select 1 from person p1, person p2
                            from
                            employeesWhoMakeMoreThan50KAtCompany(c.cname))
 
-9. In the following queries with quantifiers you have to use the method of Venn diagrams with counting conditions. In particular, you need to use views and parameterized views to specify the relevant sets that are involved in this queries and make appropriate use of the SQL COUNT
-aggregate function.
+-- 9. In the following queries with quantifiers you have to use the method of Venn diagrams with counting conditions. In particular, you need to use views and parameterized views to specify the relevant sets that are involved in this queries and make appropriate use of the SQL COUNT
+-- aggregate function.
 
-Using this method, formulate the following queries in Pure SQL.
+-- Using this method, formulate the following queries in Pure SQL.
 
-(a) Find the pid of each employee who has all the job skills of at least one of his or her managers.
+-- (a) Find the pid of each employee who has all the job skills of at least one of his or her managers.
 
 create function job_skillsOfPerson(person int)
 returns table (skill text) as
@@ -275,7 +275,7 @@ where exists (select 1
                          select skill
                          from job_skillsOfPerson(w.pid)) q) = 0);
 
-(b) Find each pairs (c,m) where c is the name of a company that is located in Bloomington and m is the mid a manager who works for that company and who manages at least two employees who make more than $50,000.
+-- (b) Find each pairs (c,m) where c is the name of a company that is located in Bloomington and m is the mid a manager who works for that company and who manages at least two employees who make more than $50,000.
 
 create function employeesManagedByManager(manager int)
 returns table (pid int) as
@@ -307,14 +307,13 @@ and (select count (1)
             select pid
             from employeesWhoMakeMoreThan50KAtCompany(c.cname))) >= 2
 
-(c) Find each pair of persons pids (p1,p2) such that p1 has at least 3 of the job skills of person p2.
+-- (c) Find each pair of persons pids (p1,p2) such that p1 has at least 3 of the job skills of person p2.
 
 create function job_skillsOfPerson(person int)
 returns table (skill text) as
 $$
   select skill
-  from
-  job_skill
+  from job_skill
   where pid = person;
 $$ language sql;
 
@@ -327,7 +326,7 @@ where (select count(1)
               select skill
               from job_skillOfPerson(p2.pid)) q) >= 3;
 
-(d) Find each pair of persons pids (p1,p2) such that p1 has all-but three of the job skills of person p2.
+-- (d) Find each pair of persons pids (p1,p2) such that p1 has all-but three of the job skills of person p2.
 
 select p1.pid, p2.pid
 from person p1, person p2
