@@ -1,0 +1,117 @@
+Question 1:
+Amazon
+Apple
+Google
+Hulu
+IBM
+Intel
+Microsoft
+Netflix
+Uber
+
+Question 2:
+12,Deepa
+17,Lisa
+18,Ryan
+24,Aya
+31,Aya
+32,Anna
+
+Question 3:
+Mathematics
+Accounting
+Networks
+
+Question 4:
+4,Ryan
+11,Arif
+26,Anna
+30,Aya
+
+Question 5:
+Apple,Amazon
+Apple,Yahoo
+Apple,Zoom
+Google,Amazon
+Google,Apple
+Google,Hulu
+Google,Netflix
+Google,Yahoo
+Google,Zoom
+Hulu,Amazon
+Hulu,Yahoo
+Hulu,Zoom
+IBM,Amazon
+IBM,Apple
+IBM,Hulu
+IBM,Netflix
+IBM,Yahoo
+IBM,Zoom
+Intel,Amazon
+Intel,Apple
+Intel,Hulu
+Intel,Netflix
+Intel,Yahoo
+Intel,Zoom
+Microsoft,Amazon
+Microsoft,Apple
+Microsoft,Hulu
+Microsoft,Netflix
+Microsoft,Yahoo
+Microsoft,Zoom
+Netflix,Amazon
+Netflix,Yahoo
+Netflix,Zoom
+Uber,Amazon
+Uber,Apple
+Uber,Hulu
+Uber,Netflix
+Uber,Yahoo
+Uber,Zoom
+Yahoo,Amazon
+Yahoo,Zoom
+
+Question 6:
+1,Nick
+2,Deepa
+4,Ryan
+5,Hasan
+6,Arif
+7,Ryan
+8,Jean
+9,Aya
+10,Lisa
+11,Arif
+14,Ryan
+15,Nick
+16,Anna
+17,Lisa
+18,Ryan
+20,Danielle
+22,Anna
+23,Chris
+25,Arif
+26,Anna
+27,Latha
+29,Linda
+30,Aya
+31,Aya
+32,Anna
+
+Question 7:
+22
+15
+5
+10
+13
+11
+23
+
+Question 8:
+Microsoft,20
+
+Question 9:
+1,Nick
+
+Question 10:
+27
