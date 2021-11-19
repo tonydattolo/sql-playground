@@ -506,3 +506,111 @@ WHERE p.pid IN (
                     )
             )
     );
+
+-- prodedural language SQL function for factorial
+CREATE FUNCTION factorial(n INT) RETURNS INT
+BEGIN
+    DECLARE result INT;
+    SET result = 1;
+    WHILE n > 1 DO
+        SET result = result * n;
+        SET n = n - 1;
+    END WHILE;
+    RETURN result;
+END;
+
+-- Write a PL/pgSQL program that computes and returns the maximum of two values. 
+-- Example : 
+-- Input num1 = 51, num2 = 32 
+-- Output : 51
+CREATE OR REPLACE FUNCTION max(num1 INT, num2 INT) RETURNS INT AS $$
+DECLARE
+    result INT;
+BEGIN
+    IF num1 > num2 THEN
+        SET result = num1;
+    ELSE
+        SET result = num2;
+    END IF;
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql;
+
+
+create table customers(
+    id int,
+    primary key (id),
+    name text,
+    age int,
+    address text,
+    salary decimal
+);
+-- Write a PL/pgSQL program that increments the salary of all customers in
+-- customers in the customer table by 500 and replace the salary(incremented) back into the table.
+CREATE OR REPLACE FUNCTION increment_salary(customers customer) RETURNS customer AS $$
+DECLARE
+    salary_increment int;
+BEGIN
+    SET salary_increment = 500;
+    UPDATE customers
+    SET salary = salary + salary_increment;
+    RETURN customers;
+END;
+
+-- Write a PL/pgSQL program that reverses a number using postgresql function.  
+-- Example:  
+-- Input: num = 123 
+-- Output: 321
+CREATE OR REPLACE FUNCTION reverse_number(num INT) RETURNS INT AS $$
+DECLARE
+    result INT;
+BEGIN
+    SET result = 0;
+    WHILE num > 0 DO
+        SET result = result * 10 + num % 10;
+        SET num = num / 10;
+    END WHILE;
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Write a PL/pgSQL program that takes a number n as input and prints a right-angled 
+-- pyramid of *  
+--             Input:3 
+--             Output: 
+--             * 
+--             ** 
+--             ***
+CREATE OR REPLACE FUNCTION pyramid(n INT) RETURNS VOID AS $$
+DECLARE
+    i INT;
+BEGIN
+    FOR i IN 1..n LOOP
+        FOR j IN 1..i LOOP
+            print '*';
+        END LOOP;
+        print '\n';
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- 5. Write a PostgreSQL PL/pgSQL program that takes two numbers and find the GCD (Greatest 
+-- Common Divisor) or HCF (Highest Common Factor) value of the numbers.  
+--             Example :  
+--             Input: num1 = 8, num2 = 48 
+--             Output: 8 
+CREATE OR REPLACE FUNCTION gcd(num1 INT, num2 INT) RETURNS INT AS $$
+DECLARE
+    result INT;
+BEGIN
+
+    WHILE num1 > 0 DO
+        SET result = num1;
+        SET num1 = num2 % num1;
+        SET num2 = result;
+    END WHILE;
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql;

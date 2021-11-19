@@ -1,0 +1,39 @@
+Assignment6, tdattolo, B461
+
+1.
+select max(51,32)
+OUT: 51
+select max(77,666)
+OUT: 666
+
+2.
+"(1,Bhargav,32,Ahmedabad,2500.00)"
+"(2,Tarika,25,Delhi,2000.00)"
+"(3,John,23,Kota,2500.00)"
+"(4,Michael,25,Mumbai,7000.00)"
+"(5,Harish,27,Bhopal,9000.00)"
+"(6,Suraj,22,MP,5000.00)"
+
+3.
+select reverse_number(123);
+OUT: 321
+select reverse_number(6789);
+OUT: 9876
+
+4.
+select pyramid(3);
+OUT: *
+     **
+     ***
+select pyramid(5);
+OUT: *
+     **
+     ***
+     ****
+     *****
+
+5.
+select gcd(8,48);
+OUT: 8
+select gcd(9, 54);
+OUT: 9
